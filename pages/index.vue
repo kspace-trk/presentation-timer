@@ -70,7 +70,7 @@ export default {
       voice3.play()
       setTimeout(this.start, 7500)
       this.presentState = false
-      this.timerOn = true //timerがONであることを状態として保持
+      setTimeout(this.changeState, 7500)
     },
     stop() {
       clearInterval(this.timerObj)
