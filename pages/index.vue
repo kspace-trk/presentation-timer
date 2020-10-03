@@ -34,7 +34,7 @@ export default {
       timerOn: false,
       timerPage: false,
       timerObj: null,
-      presentState: true,
+      presentState: false, //終了後に音声を鳴らすかどうか
     }
   },
   methods: {
@@ -54,19 +54,23 @@ export default {
       this.timerObj = setInterval(function () {
         self.count()
       }, 1000)
-      this.timerOn = true //timerがOFFであることを状態として保持
+      this.timerOn = true //timerがONであることを状態として保持
+    },
+    changeState() {
+      this.presentState = true
     },
     startPresent() {
       this.timerPage = true
       voice1.play()
       setTimeout(this.start, 4000)
-      this.presentState = true
+      setTimeout(this.changeState, 4000)
     },
     startQnA() {
       this.timerPage = true
       voice3.play()
       setTimeout(this.start, 7500)
       this.presentState = false
+      this.timerOn = true //timerがONであることを状態として保持
     },
     stop() {
       clearInterval(this.timerObj)
@@ -79,11 +83,14 @@ export default {
       this.timerPage = false
       this.min = 2
       this.sec = 0
-      if (this.presentState) {
+      if (this.sec > 0 && this.min > 0 && this.presentState) {
         voice2.play()
+      } else if (this.sec <= 0 && this.min <= 0) {
+        voice2.pause()
       }
     },
   },
+
   computed: {
     formatTime() {
       let timeStrings = [this.min.toString(), this.sec.toString()].map(
