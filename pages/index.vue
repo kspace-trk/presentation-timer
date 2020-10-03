@@ -1,12 +1,18 @@
 <template>
   <div class="main-wrapper">
-    <div class="timer">
-      {{ formatTime }}
+    <div class="menu-wrapper" v-if="!timerPage">
+      <button @click="changePage">発表開始</button>
+      <button>質疑応答開始</button>
     </div>
-    <div class="timer-btn">
-      <button @click="start" v-if="!timerOn">スタート</button>
-      <button @click="stop" v-if="timerOn">ストップ</button>
-      <button @click="complete">リセット</button>
+    <div class="timer-wrapper" v-if="timerPage">
+      <div class="timer">
+        {{ formatTime }}
+      </div>
+      <div class="timer-btn">
+        <button @click="start" v-if="!timerOn">スタート</button>
+        <button @click="stop" v-if="timerOn">ストップ</button>
+        <button @click="complete">リセット</button>
+      </div>
     </div>
   </div>
 </template>
@@ -20,10 +26,14 @@ export default {
       min: 2,
       sec: 0,
       timerOn: false,
+      timerPage: false,
       timerObj: null,
     }
   },
   methods: {
+    changePage() {
+      this.timerPage = true
+    },
     count: function () {
       if (this.sec <= 0 && this.min >= 1) {
         this.min--
@@ -50,6 +60,8 @@ export default {
 
     complete: function () {
       clearInterval(this.timerObj)
+      this.timerOn = false //timerがOFFであることを状態として保持
+      this.timerPage = false
       this.min = 2
       this.sec = 0
     },
@@ -78,6 +90,17 @@ export default {
 .main-wrapper {
   width: 100%;
   height: 100vh;
+}
+.menu-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.timer-wrapper {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
