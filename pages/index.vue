@@ -1,17 +1,19 @@
 <template>
   <div class="main-wrapper">
-    <div class="menu-wrapper" v-if="!timerPage">
-      <button @click="startPresent">発表開始</button>
-      <button @click="startQnA">質疑応答開始</button>
-    </div>
-    <div class="timer-wrapper" v-if="timerPage">
-      <div class="timer">
-        {{ formatTime }}
+    <div class="main-contents">
+      <div class="menu-wrapper" v-if="!timerPage">
+        <button @click="startPresent">発表開始</button>
+        <button @click="startQnA">質疑応答開始</button>
       </div>
-      <div class="timer-btn">
-        <button @click="start" v-if="!timerOn">スタート</button>
-        <button @click="stop" v-if="timerOn">ストップ</button>
-        <button @click="complete">リセット</button>
+      <div class="timer-wrapper" v-if="timerPage">
+        <div class="timer">
+          {{ formatTime }}
+        </div>
+        <div class="timer-btn">
+          <button @click="start" v-if="!timerOn">スタート</button>
+          <button @click="stop" v-if="timerOn">ストップ</button>
+          <button @click="complete">リセット</button>
+        </div>
       </div>
     </div>
   </div>
@@ -70,7 +72,6 @@ export default {
       voice3.play()
       setTimeout(this.start, 7500)
       this.presentState = false
-      setTimeout(this.changeState, 7500)
     },
     stop() {
       clearInterval(this.timerObj)
@@ -81,13 +82,13 @@ export default {
       clearInterval(this.timerObj)
       this.timerOn = false //timerがOFFであることを状態として保持
       this.timerPage = false
-      this.min = 2
-      this.sec = 0
-      if (this.sec > 0 && this.min > 0 && this.presentState) {
+      if (this.sec == 0 && this.min == 0 && this.presentState) {
         voice2.play()
-      } else if (this.sec <= 0 && this.min <= 0) {
+      } else if (this.sec >= 0 && this.min >= 0) {
         voice2.pause()
       }
+      this.min = 2
+      this.sec = 0
     },
   },
 
@@ -116,12 +117,30 @@ export default {
   width: 100%;
   height: 100vh;
 }
+.main-contents {
+  max-width: 1000px;
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .menu-wrapper {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+@media screen and (max-width: 480px) {
+  .menu-wrapper {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 .timer-wrapper {
   width: 100%;
@@ -141,6 +160,7 @@ export default {
   max-width: 600px;
   width: 90%;
 }
+
 button {
   width: 200px;
   height: 75px;
